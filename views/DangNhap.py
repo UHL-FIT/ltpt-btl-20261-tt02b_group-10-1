@@ -22,7 +22,7 @@ class LoginView(tk.Tk):
 
         # Nút đăng nhập màu đỏ
         self.btn_login = tk.Button(self, text="Đăng Nhập", bg="red", fg="white", 
-                                   font=("Arial", 10, "bold"), width=15)
+                                   font=("TimeNewRoman", 10, "bold"), width=15)
         self.btn_login.pack(pady=20)
 
     def get_credentials(self):
