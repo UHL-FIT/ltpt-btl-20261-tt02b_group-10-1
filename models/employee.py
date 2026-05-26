@@ -1,37 +1,42 @@
-"""Model nhân viên và công thức tính lương thực nhận."""
-from __future__ import annotations
-import uuid                                    
-from dataclasses import dataclass, field, asdict
-from dataclasses import asdict, dataclass
-from typing import Any
-
-
-@dataclass
 class Employee:
-    
-    full_name: str
-    department: str
-    base_salary: float
-    allowance: float
-    deduction: float
-    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    def __init__(self, id, full_name, department, base_salary, allowance, deduction, working_days=0, overtime_hours=0.0):
+        self.id = str(id)
+        self.full_name = str(full_name)
+        self.department = str(department)
+        self.base_salary = float(base_salary)
+        self.allowance = float(allowance)
+        self.deduction = float(deduction)
+        self.working_days = int(working_days)
+        self.overtime_hours = float(overtime_hours)
 
-    def net_salary(self) -> float:
-        """Lương thực nhận = lương cơ bản + phụ cấp - khấu trừ."""
+    def net_salary(self):
+        """Lương thực nhận = Lương cơ bản + Phụ cấp - Khấu trừ"""
         return self.base_salary + self.allowance - self.deduction
 
-    def to_dict(self) -> dict[str, Any]:
-        d = asdict(self)
-        d["net_salary"] = round(self.net_salary(), 2)
-        return d
+    def to_dict(self):
+        """Chuyển thông tin nhân viên thành dictionary để lưu vào JSON."""
+        return {
+            "id": self.id,
+            "full_name": self.full_name,
+            "department": self.department,
+            "base_salary": self.base_salary,
+            "allowance": self.allowance,
+            "deduction": self.deduction,
+            "working_days": self.working_days,
+            "overtime_hours": self.overtime_hours,
+            "net_salary": round(self.net_salary(), 2)
+        }
 
     @staticmethod
-    def from_dict(data: dict[str, Any]) -> "Employee":
+    def from_dict(data):
+        """Tạo đối tượng Employee từ dữ liệu dictionary đọc từ JSON."""
         return Employee(
-            id=str(data["id"]),
-            full_name=str(data["full_name"]),
-            department=str(data.get("department", "")),
-            base_salary=float(data["base_salary"]),
-            allowance=float(data.get("allowance", 0)),
-            deduction=float(data.get("deduction", 0)),
+            id=data.get("id"),
+            full_name=data.get("full_name"),
+            department=data.get("department", ""),
+            base_salary=data.get("base_salary", 0.0),
+            allowance=data.get("allowance", 0.0),
+            deduction=data.get("deduction", 0.0),
+            working_days=data.get("working_days", 0),
+            overtime_hours=data.get("overtime_hours", 0.0)
         )
