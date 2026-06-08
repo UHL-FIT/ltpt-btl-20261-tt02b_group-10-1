@@ -21,8 +21,8 @@ class LoginView(ttk.Frame):
         btn_frame = ttk.Frame(frm)
         btn_frame.grid(row=4, column=0, columnspan=2, sticky=tk.EW)
         
-        ttk.Button(btn_frame, text="Đăng ký tài khoản", command=self._open_register).pack(side=tk.LEFT)
-        ttk.Button(btn_frame, text="Đăng nhập", command=self._submit).pack(side=tk.RIGHT)
+        tk.Button(btn_frame, text="Đăng ký tài khoản", command=self._open_register, bg="#95A5A6", fg="white", activebackground="#7F8C8D", activeforeground="white", relief="flat", bd=0, padx=10, pady=5).pack(side=tk.LEFT)
+        tk.Button(btn_frame, text="Đăng nhập", command=self._submit, bg="#3498DB", fg="white", activebackground="#2980B9", activeforeground="white", relief="flat", bd=0, padx=15, pady=5).pack(side=tk.RIGHT)
 
         self.username.focus_set()
         self.username.bind("<Return>", lambda e: self._submit())
@@ -85,4 +85,4 @@ class LoginView(ttk.Frame):
             else:
                 messagebox.showerror("Lỗi", "Tên đăng nhập đã tồn tại!", parent=reg_win)
 
-        ttk.Button(frm, text="Đăng ký", command=_do_register).grid(row=4, column=0)
+        tk.Button(frm, text="Đăng ký", command=_do_register, bg="#2ECC71", fg="white", activebackground="#27AE60", activeforeground="white", relief="flat", bd=0, padx=15, pady=5).grid(row=4, column=0, pady=(10, 0))
