@@ -1,1 +1,38 @@
-
+[
+  {
+    "id": "1",
+    "full_name": "Nguyễn Đức Thắng",
+    "department": "CNTT",
+    "base_salary": 235555.0,
+    "allowance": 666.0,
+    "deduction": 22.0,
+    "net_salary": 212579.1
+  },
+  {
+    "id": "2",
+    "full_name": "Vũ Tuấn Anh",
+    "department": "KHMT",
+    "base_salary": 54353.0,
+    "allowance": 565.0,
+    "deduction": 55.0,
+    "net_salary": 49376.7
+  },
+  {
+    "id": "3",
+    "full_name": "Nguyễn Quang Huy",
+    "department": "KD",
+    "base_salary": 23333.0,
+    "allowance": 56.0,
+    "deduction": 5.0,
+    "net_salary": 21045.6
+  },
+  {
+    "id": "4",
+    "full_name": "123456",
+    "department": "fgfg",
+    "base_salary": 524334.0,
+    "allowance": 56.0,
+    "deduction": 6.0,
+    "net_salary": 471945.6
+  }
+]
