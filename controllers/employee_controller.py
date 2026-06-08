@@ -14,7 +14,7 @@ class EmployeeController:
         if self._on_changed: 
             self._on_changed() # Nếu có, gọi hàm đó thực thi
 
-    # Hàm lấy danh sách tất cả nhân viên
+    # Hàm lấy danh sách tất cả nhân viên (luôn được sắp xếp theo ID)
     def list_employees(self): 
         """Lấy danh sách đối tượng Employee từ file json."""
         raw = load_json("employees.json", default=[]) # Đọc dữ liệu từ file "employees.json". Nếu file lỗi/trống, trả về list rỗng []
@@ -24,22 +24,29 @@ class EmployeeController:
                 out.append(Employee.from_dict(item)) # Chuyển đổi dict thành object Employee và thêm vào danh sách 'out'
             except Exception: 
                 continue 
+        # Sắp xếp theo ID số nguyên tăng dần từ 1 trở đi
+        try:
+            out.sort(key=lambda e: int(e.id))
+        except Exception:
+            pass
         return out # Trả về danh sách các đối tượng Employee hợp lệ
 
-    def add_employee(self, full_name, department, base_salary, allowance, deduction, working_days, overtime_hours): # Hàm tạo và thêm nhân viên mới
+    def add_employee(self, full_name, department, base_salary, allowance, deduction): # Hàm tạo và thêm nhân viên mới
         """Thêm một nhân viên mới."""
         # Lấy danh sách nhân viên để xử lý
         employees = self.list_employees() 
         
-        # Tự động sinh ID tiếp theo
-        next_id = 1 
-        for e in employees: 
+        # Tự động sinh ID tiếp theo (Tìm ID số nguyên nhỏ nhất còn trống bắt đầu từ 1)
+        used_ids = set()
+        for e in employees:
             try:
-                curr_id = int(e.id)
-                if curr_id >= next_id: 
-                    next_id = curr_id + 1 
-            except ValueError: 
-                pass 
+                used_ids.add(int(e.id))
+            except ValueError:
+                pass
+        
+        next_id = 1
+        while next_id in used_ids:
+            next_id += 1 
         # Khởi tạo một đối tượng nhân viên mới với các thông số truyền vào
         emp = Employee( 
             id=str(next_id), # Gán ID mới vừa tính toán được (chuyển ngược lại thành chuỗi string)
@@ -47,14 +54,36 @@ class EmployeeController:
             department=department.strip(), # Gán tên phòng ban và cắt bỏ khoảng trắng thừa
             base_salary=base_salary, # Gán mức lương cơ bản
             allowance=allowance, # Gán mức phụ cấp
-            deduction=deduction, # Gán mức khấu trừ
-            working_days=working_days, # Gán số ngày làm việc
-            overtime_hours=overtime_hours # Gán số giờ làm thêm
+            deduction=deduction # Gán mức khấu trừ
         )
         employees.append(emp) # Thêm object nhân viên mới vào danh sách hiện tại
+        # Sắp xếp lại danh sách theo ID tăng dần trước khi lưu vào JSON
+        try:
+            employees.sort(key=lambda e: int(e.id))
+        except Exception:
+            pass
         save_json("employees.json", [e.to_dict() for e in employees]) # Chuyển tất cả object thành dict và lưu đè lại vào file JSON
         self._notify() # Báo hiệu dữ liệu đã thay đổi (để cập nhật giao diện nếu cần)
         return emp # Trả về đối tượng nhân viên vừa được tạo
+
+    def update_employee(self, emp_id, full_name, department, base_salary, allowance, deduction):
+        """Cập nhật thông tin nhân viên."""
+        employees = self.list_employees()
+        updated = False
+        for e in employees:
+            if e.id == emp_id:
+                e.full_name = full_name.strip()
+                e.department = department.strip()
+                e.base_salary = base_salary
+                e.allowance = allowance
+                e.deduction = deduction
+                updated = True
+                break
+        if updated:
+            save_json("employees.json", [e.to_dict() for e in employees])
+            self._notify()
+            return True
+        return False
     
     # Hàm xóa nhân viên dựa vào ID
     def delete_employee(self, emp_id):
@@ -71,11 +100,7 @@ class EmployeeController:
             return True 
         return False
     
-    # Hàm tính tổng giờ làm thêm của toàn bộ công ty
-    def get_total_overtime_hours(self): 
-        """Thống kê tổng số giờ làm thêm."""
-        # Duyệt qua từng nhân viên, lấy ra overtime_hours và dùng sum() để cộng dồn tất cả lại
-        return sum(e.overtime_hours for e in self.list_employees())
+    # (Đã xóa hàm thống kê giờ làm thêm)
 
     def get_salary_growth_rate(self): #hàm
         """Tính tỷ lệ tăng trưởng lương trung bình."""
